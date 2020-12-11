@@ -1,0 +1,31 @@
+os: linux
+dist: trusty
+language: c
+
+git:
+  depth: 2
+
+before_install:
+  # Required by test-alternatives.sh
+  - git clone https://github.com/beakerlib/beakerlib.git
+
+install:
+  - cd beakerlib && sudo make && sudo make install && cd -
+
+addons:
+  apt:
+    packages:
+      # Required by Makefile
+      - libpopt-dev
+      - libselinux1-dev
+      - libnewt-dev
+
+jobs:
+  include:
+    - language: c
+      script: make all && make install DESTDIR=/tmp/chkconfig
+    - language: shell
+      script: bash ./test-alternatives.sh
+
+notifications:
+  email: false
