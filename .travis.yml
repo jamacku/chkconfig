@@ -1,0 +1,23 @@
+# Run in fast container-based environment:
+sudo: false
+dist: trusty
+
+git:
+  depth: 2
+
+# We need to install the libpopt dependency without sudo:
+#addons:
+#  apt:
+#    packages:
+#      libpopt-dev
+
+matrix:
+  include:
+    #- language: shell
+    #  script: 
+    #    - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./.ci/check-shell.sh; fi'
+    - language: c
+      script: make all && make install DESTDIR=/tmp/chkconfig
+
+notifications:
+  email: false
