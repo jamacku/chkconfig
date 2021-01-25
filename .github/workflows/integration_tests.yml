@@ -1,0 +1,24 @@
+# https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+name: Integration tests
+on: [push, pull_request]
+
+jobs:
+  buildCheck:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Repository checkout
+        uses: actions/checkout@v1
+      - name: Install dependencies
+        run: sudo apt install -y libpopt-dev libselinux1-dev libnewt-dev
+      - name: Build & install
+        run: make all && make install DESTDIR=/tmp/chkconfig
+  
+  unitTests:
+    runs-on: ubuntu-20.04
+    defaults:
+      run:
+        shell: bash
+    needs: buildcheck
+    steps: Tests
+      - name:
+        run: bash ./test-alternatives.sh
